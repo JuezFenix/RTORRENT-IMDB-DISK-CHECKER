@@ -50,8 +50,8 @@ def notif_slack():
                 'icon_emoji': cfg.slack_icon
         }
         req = Request(cfg.slack_webhook_url)
-        response = urlopen(req, json.dumps(slack_data).encode('utf8')).read()
-        if response.decode('utf8') != 'ok':
+        response = urlopen(req, json.dumps(slack_data, ensure_ascii=False, encoding='utf-8')).read()
+        if response != 'ok':
                 print('Failed to send slack notification, check slack_webhook_url.')
 
 if cfg.notification_email:

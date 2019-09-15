@@ -8,6 +8,7 @@ start = datetime.now()
 import sys, os, time, smtplib, json, config as cfg
 from subprocess import check_output
 from remotecaller import xmlrpc
+
 try:
         from urllib2 import Request, urlopen
 except:
@@ -66,8 +67,8 @@ def send_slack():
                 'icon_emoji': ':white_check_mark:'
         }
         req = Request(cfg.slack_webhook_url)
-        response = urlopen(req, json.dumps(slack_data).encode('utf8')).read()
-        if response.decode('utf8') != 'ok':
+        response = urlopen(req, json.dumps(slack_data, ensure_ascii=False, encoding='utf-8')).read()
+        if response != 'ok':
                 print('Failed to send slack notification, check slack_webhook_url.')
 
 try:
@@ -266,11 +267,10 @@ try:
                         if calc < 0:
                                 textfile.write('Cannot free enough space!\n')
                         for result in displayed:
-
                                 if sys.version_info[0] == 3:
                                         textfile.write(result + '\n')
                                 else:
-                                        textfile.write(result.encode('utf8') + '\n')
+                                        textfile.write(result.encode('utf-8') + '\n')
 
                 print('\n===== Test for Torrent Download in %s =====\n\n%s' % (tested_path, now))
                 print('Executed in %s seconds\n%s Torrent(s) Deleted Totaling %.2f GB' % (time, count, mp_freed_space))
@@ -278,13 +278,12 @@ try:
                 if calc < 0:
                         print('Cannot free enough space!\n')
                 for result in displayed:
-                        print(result.encode('utf8'))
+                        print(result)
                 completed = completed_copy[:]
 
 
 except Exception as e:
-        print(e.encode('utf8'))
-
+        print(e)
 try:
         xmlrpc('d.multicall2', ('', 'leeching', 'd.down.total='))
 except:
